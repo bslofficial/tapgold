@@ -3,29 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>TapGold - Tap to Earn</title>
+    <title>TapGold</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="game-container">
-        <header>
-            <h1>TapGold</h1>
-            <p class="tagline">ট্যাপ করুন আর গোল্ড জমান!</p>
-        </header>
-
-        <div class="score-board">
-            <h2>🏆 আপনার গোল্ড: <span id="score">0</span></h2>
+        <div class="header">
+            <h2>🏆 গোল্ড: <span id="score">0</span></h2>
+            <p>⚡ এনার্জি: <span id="energy">100</span>/100</p>
         </div>
 
         <div class="tap-area">
-            <div id="tap-btn" class="tap-circle">
-                <span>🪙</span>
-                <p>TAP</p>
-            </div>
+            <div id="tap-btn" class="tap-circle">🪙</div>
+            <p>ট্যাপ করুন!</p>
+        </div>
+
+        <div class="footer-menu">
+            <button onclick="buyBoost()">🚀 বুস্ট (৫০০ গোল্ড)</button>
         </div>
     </div>
-
     <script type="module" src="script.js"></script>
 </body>
 </html>

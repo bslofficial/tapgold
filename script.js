@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, increment, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC_TG9wP8DXtRoSZF3VTxQYXHXtDfosCAE",
@@ -15,24 +15,49 @@ const db = getFirestore(app);
 const tg = window.Telegram.WebApp;
 tg.expand();
 
+// ইউজার ডাটা বের করা
+const user = tg.initDataUnsafe?.user;
+const userId = user?.id ? user.id.toString() : "test_user_123";
+const username = user?.first_name || "গেস্ট ইউজার";
+
+const userRef = doc(db, "users", userId);
+
 let score = 0;
 let energy = 100;
 let power = 1;
-const userId = tg.initDataUnsafe?.user?.id || "test_user_123";
-const userRef = doc(db, "users", userId.toString());
+let refCount = 0;
 
-// ডাটা লোড
-async function loadData() {
+// ১. সাইনআপ ও ডাটা লোড
+async function initUser() {
     const snap = await getDoc(userRef);
-    if (snap.exists()) {
-        score = snap.data().score || 0;
+    if (!snap.exists()) {
+        // নতুন ইউজার হলে সাইনআপ (ডাটাবেসে তৈরি করা)
+        await setDoc(userRef, {
+            userId: userId,
+            name: username,
+            score: 0,
+            energy: 100,
+            power: 1,
+            referrals: 0,
+            level: 1,
+            joinedAt: new Date().toISOString()
+        });
+        score = 0;
     } else {
-        await setDoc(userRef, { score: 0 });
+        score = snap.data().score || 0;
+        refCount = snap.data().referrals || 0;
+        power = snap.data().power || 1;
     }
+    
+    document.getElementById('username').innerText = username;
     document.getElementById('score').innerText = score;
+    document.getElementById('ref-count').innerText = refCount;
+    document.getElementById('ref-link').value = `https://t.me/tapgold_2026_bot?start=${userId}`;
+    
+    loadLeaderboard();
 }
 
-// ট্যাপ লজিক
+// ২. ট্যাপ লজিক
 document.getElementById('tap-btn').addEventListener('click', async () => {
     if (energy > 0) {
         score += power;
@@ -45,17 +70,50 @@ document.getElementById('tap-btn').addEventListener('click', async () => {
     }
 });
 
-// বুস্ট লজিক
+// ৩. বুস্ট লজিক
 window.buyBoost = async () => {
     if (score >= 500) {
         score -= 500;
         power += 1;
         document.getElementById('score').innerText = score;
-        await updateDoc(userRef, { score: score });
-        alert("পাওয়ার বেড়েছে!");
+        await updateDoc(userRef, { score: score, power: power });
+        alert("পাওয়ার লেভেল বেড়েছে!");
     } else {
-        alert("গোল্ড কম!");
+        alert("পয়েন্ট কম (৫০০ গোল্ড লাগবে)!");
     }
+};
+
+// ৪. লিডারবোর্ড লোড করা
+async function loadLeaderboard() {
+    const listEl = document.getElementById('leaderboard-list');
+    listEl.innerHTML = "";
+    try {
+        const q = query(collection(db, "users"), orderBy("score", "desc"), limit(10));
+        const querySnapshot = await getDocs(q);
+        let rank = 1;
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            listEl.innerHTML += `<li><span>#${rank} ${data.name}</span> <b>${data.score} গোল্ড</b></li>`;
+            rank++;
+        });
+    } catch (e) {
+        listEl.innerHTML = "<li>লিডারবোর্ড লোড করতে সমস্যা হয়েছে।</li>";
+    }
+}
+
+// ৫. ট্যাব পরিবর্তন ফাংশন
+window.switchTab = (tabName) => {
+    document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+    document.getElementById(`${tabName}-section`).classList.add('active');
+    if(tabName === 'leaderboard') loadLeaderboard();
+};
+
+// ৬. রেফারেল লিংক কপি
+window.copyRefLink = () => {
+    const linkInput = document.getElementById('ref-link');
+    linkInput.select();
+    navigator.clipboard.writeText(linkInput.value);
+    alert("রেফারেল লিংক কপি হয়েছে!");
 };
 
 // এনার্জি রিফিল
@@ -66,4 +124,4 @@ setInterval(() => {
     }
 }, 3000);
 
-loadData();
+initUser();

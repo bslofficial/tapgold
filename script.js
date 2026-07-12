@@ -1,9 +1,7 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getFirestore, doc, setDoc, getDoc, updateDoc, increment } from "firebase/firestore";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Your web app's Firebase configuration
+// ফায়ারবেস কনফিগারেশন
 const firebaseConfig = {
   apiKey: "AIzaSyC_TG9wP8DXtRoSZF3VTxQYXHXtDfosCAE",
   authDomain: "tapgold-78143.firebaseapp.com",
@@ -14,10 +12,9 @@ const firebaseConfig = {
   measurementId: "G-ZQK8M0VX3C"
 };
 
-// Initialize Firebase
+// ফায়ারবেস ইনিশিয়ালাইজেশন
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const db = getFirestore(app); // Firestore ইনিশিয়ালাইজ করা হলো
+const db = getFirestore(app);
 
 // টেলিগ্রাম ওয়েব অ্যাপ ইনিশিয়ালাইজেশন
 const tg = window.Telegram.WebApp;
@@ -27,43 +24,50 @@ let score = 0;
 const scoreDisplay = document.getElementById('score');
 const tapBtn = document.getElementById('tap-btn');
 
-// ইউজারের বর্তমান স্কোর ফায়ারস্টোর থেকে লোড করা (যদি থাকে)
+// ফায়ারস্টোর থেকে ইউজারের ডাটা লোড করা
 async function loadUserScore(userId) {
     const userRef = doc(db, "users", userId.toString());
-    const userSnap = await getDoc(userRef);
-    
-    if (userSnap.exists()) {
-        score = userSnap.data().score || 0;
-        scoreDisplay.innerText = score;
-    } else {
-        // নতুন ইউজার হলে ডাটাবেসে এন্ট্রি তৈরি করা
-        await setDoc(userRef, { score: 0 });
+    try {
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+            score = userSnap.data().score || 0;
+            scoreDisplay.innerText = score;
+        } else {
+            await setDoc(userRef, { score: 0 });
+            score = 0;
+            scoreDisplay.innerText = score;
+        }
+    } catch (error) {
+        console.error("ডেটা লোড করতে সমস্যা হয়েছে: ", error);
     }
 }
 
-// টেলিগ্রাম থেকে ইউজার আইডি নিয়ে ডাটা লোড করা
+// টেলিগ্রাম ইউজার আইডি যাচাই করে ডেটা ফেচ করা
 if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
     const userId = tg.initDataUnsafe.user.id;
     loadUserScore(userId);
+} else {
+    // টেলিগ্রাম ছাড়া সাধারণ ব্রাউজারে টেস্ট করার জন্য ফলব্যাক আইডি
+    loadUserScore("test_user_123");
 }
 
-// ট্যাপ করার ফাংশন
+// ট্যাপ বাটন ক্লিক ইভেন্ট
 tapBtn.addEventListener('click', async () => {
     score++;
     scoreDisplay.innerText = score;
-    
+
+    let userId = "test_user_123";
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-        const userId = tg.initDataUnsafe.user.id.toString();
-        const userRef = doc(db, "users", userId);
-        
-        try {
-            // রিয়েল-টাইমে ডাটাবেসে পয়েন্ট আপডেট করা
-            await updateDoc(userRef, {
-                score: increment(1)
-            });
-        } catch (error) {
-            // যদি ডকুমেন্ট আগে না থাকে, তবে সেট করে দেওয়া
-            await setDoc(userRef, { score: score }, { merge: true });
-        }
+        userId = tg.initDataUnsafe.user.id.toString();
+    }
+
+    const userRef = doc(db, "users", userId);
+    try {
+        await updateDoc(userRef, {
+            score: increment(1)
+        });
+    } catch (error) {
+        // যদি ডকুমেন্ট না থাকে তবে তৈরি করে নেওয়া
+        await setDoc(userRef, { score: score }, { merge: true });
     }
 });

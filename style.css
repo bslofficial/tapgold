@@ -3,10 +3,11 @@ body { background: #111; color: white; font-family: sans-serif; display: flex; j
 .header { margin-bottom: 10px; }
 .section { display: none; flex-grow: 1; overflow-y: auto; padding: 10px; }
 .section.active { display: block; }
-.tap-circle { width: 180px; height: 180px; background: gold; border-radius: 50%; margin: 20px auto; display: flex; justify-content: center; align-items: center; font-size: 70px; cursor: pointer; transition: 0.1s; box-shadow: 0 0 20px rgba(255,215,0,0.5); }
+.tap-circle { width: 160px; height: 160px; background: gold; border-radius: 50%; margin: 15px auto; display: flex; justify-content: center; align-items: center; font-size: 60px; cursor: pointer; transition: 0.1s; box-shadow: 0 0 20px rgba(255,215,0,0.5); }
 .tap-circle:active { transform: scale(0.9); }
 .footer-menu { display: flex; justify-content: space-around; background: #222; padding: 10px 0; border-radius: 10px; margin-top: 10px; }
-.footer-menu button, .boost-btn { padding: 8px 15px; background: #f39c12; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; }
+.footer-menu button, .boost-btn, .ad-btn { padding: 8px 15px; background: #f39c12; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; margin: 5px 0; width: 100%; }
+.ad-btn { background: #27ae60; }
 .ref-box { display: flex; justify-content: center; gap: 5px; margin: 15px 0; }
 .ref-box input { padding: 5px; width: 60%; border-radius: 4px; border: none; text-align: center; }
 #leaderboard-list { list-style: none; padding: 0; margin-top: 10px; max-height: 250px; overflow-y: auto; }

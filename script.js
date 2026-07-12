@@ -15,7 +15,6 @@ const db = getFirestore(app);
 const tg = window.Telegram.WebApp;
 tg.expand();
 
-// ইউজার ডাটা বের করা
 const user = tg.initDataUnsafe?.user;
 const userId = user?.id ? user.id.toString() : "test_user_123";
 const username = user?.first_name || "গেস্ট ইউজার";
@@ -31,7 +30,6 @@ let refCount = 0;
 async function initUser() {
     const snap = await getDoc(userRef);
     if (!snap.exists()) {
-        // নতুন ইউজার হলে সাইনআপ (ডাটাবেসে তৈরি করা)
         await setDoc(userRef, {
             userId: userId,
             name: username,
@@ -83,7 +81,23 @@ window.buyBoost = async () => {
     }
 };
 
-// ৪. লিডারবোর্ড লোড করা
+// ৪. রিওয়ার্ডড অ্যাড লজিক (বিজ্ঞাপন দেখলে ১০০ গোল্ড বোনাস)
+window.watchRewardAd = () => {
+    if (typeof show_11274199 === 'function') {
+        show_11274199().then(() => {
+            score += 100;
+            document.getElementById('score').innerText = score;
+            updateDoc(userRef, { score: score });
+            alert('অভিনন্দন! বিজ্ঞাপন দেখার জন্য ১০০ গোল্ড পেয়েছেন।');
+        }).catch(e => {
+            console.log("বিজ্ঞাপন লোড হয়নি বা ক্লোজ করা হয়েছে");
+        });
+    } else {
+        alert("বিজ্ঞাপন লোড হচ্ছে, একটু পরে আবার চেষ্টা করুন।");
+    }
+};
+
+// ৫. লিডারবোর্ড লোড করা
 async function loadLeaderboard() {
     const listEl = document.getElementById('leaderboard-list');
     listEl.innerHTML = "";
@@ -99,16 +113,16 @@ async function loadLeaderboard() {
     } catch (e) {
         listEl.innerHTML = "<li>লিডারবোর্ড লোড করতে সমস্যা হয়েছে।</li>";
     }
-}
+};
 
-// ৫. ট্যাব পরিবর্তন ফাংশন
+// ৬. ট্যাব পরিবর্তন ফাংশন
 window.switchTab = (tabName) => {
     document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
     document.getElementById(`${tabName}-section`).classList.add('active');
     if(tabName === 'leaderboard') loadLeaderboard();
 };
 
-// ৬. রেফারেল লিংক কপি
+// ৭. রেফারেল লিংক কপি
 window.copyRefLink = () => {
     const linkInput = document.getElementById('ref-link');
     linkInput.select();

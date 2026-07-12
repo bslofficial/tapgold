@@ -10,17 +10,42 @@
 <body>
     <div class="game-container">
         <div class="header">
+            <h3>স্বাগতম, <span id="username">ইউজার</span>!</h3>
             <h2>🏆 গোল্ড: <span id="score">0</span></h2>
             <p>⚡ এনার্জি: <span id="energy">100</span>/100</p>
         </div>
 
-        <div class="tap-area">
-            <div id="tap-btn" class="tap-circle">🪙</div>
-            <p>ট্যাপ করুন!</p>
+        <div id="game-section" class="section active">
+            <div class="tap-area">
+                <div id="tap-btn" class="tap-circle">🪙</div>
+                <p>ট্যাপ করুন!</p>
+            </div>
+            <button class="boost-btn" onclick="buyBoost()">🚀 বুস্ট (৫০০ গোল্ড)</button>
+        </div>
+
+        <div id="refer-section" class="section">
+            <h3>আপনার রেফারেল লিংক</h3>
+            <div class="ref-box">
+                <input type="text" id="ref-link" readonly value="লিংক লোড হচ্ছে...">
+                <button onclick="copyRefLink()">কপি</button>
+            </div>
+            <p>মোট রেফার: <span id="ref-count">0</span> জন</p>
+            <div class="refer-levels">
+                <p>লেভেল ১-১০ রেফার বোনাস একটিভ!</p>
+            </div>
+        </div>
+
+        <div id="leaderboard-section" class="section">
+            <h3>🏆 সেরা খেলোয়াড়গণ</h3>
+            <ul id="leaderboard-list">
+                <li>লোড হচ্ছে...</li>
+            </ul>
         </div>
 
         <div class="footer-menu">
-            <button onclick="buyBoost()">🚀 বুস্ট (৫০০ গোল্ড)</button>
+            <button onclick="switchTab('game')">🎮 গেম</button>
+            <button onclick="switchTab('refer')">👥 রেফার</button>
+            <button onclick="switchTab('leaderboard')">🏅 লিডারবোর্ড</button>
         </div>
     </div>
     <script type="module" src="script.js"></script>

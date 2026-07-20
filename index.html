@@ -1,18 +1,47 @@
-<!-- নিচের অংশটি আপনার বডি ট্যাগের ভেতরে বাটন সেকশনে বসান -->
-<div id="game-section" class="section active">
-    <h2>স্বাগতম, <span id="username"></span>!</h2>
-    <div class="stats">গোল্ড: <span id="score">0</span></div>
-    
-    <!-- বুস্ট এবং ভিডিও বাটন পাশাপাশি -->
-    <div class="button-container" style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-        <button onclick="buyBoost()" style="flex: 1; padding: 15px; background: orange;">🚀 বুস্ট (৫০০ গোল্ড)</button>
-        <button onclick="watchRewardAd()" style="flex: 1; padding: 15px; background: green; color: white;">🎁 ভিডিও দেখুন</button>
-    </div>
-</div>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TapGold</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-<!-- মোবাইল অ্যাপের মতো নিচের নেভিগেশন বার -->
-<div class="bottom-nav" style="position: fixed; bottom: 0; width: 100%; display: flex; background: #333; color: white; padding: 10px;">
-    <button onclick="switchTab('game')" style="flex: 1;">🎮 গেম</button>
-    <button onclick="switchTab('refer')" style="flex: 1;">👥 রেফার</button>
-    <button onclick="switchTab('leaderboard')" style="flex: 1;">🏆 লিডারবোর্ড</button>
-</div>
+    <!-- গেম সেকশন -->
+    <div id="game-section" class="section active">
+        <h2>স্বাগতম, <span id="username"></span>!</h2>
+        <div class="stats">গোল্ড: <span id="score">0</span> | এনার্জি: <span id="energy">100</span></div>
+        
+        <button id="tap-btn" style="width: 200px; height: 200px; border-radius: 50%;">ট্যাপ করুন!</button>
+
+        <!-- বুস্ট এবং ভিডিও বাটন পাশাপাশি -->
+        <div class="button-container" style="display: flex; gap: 10px; justify-content: center; margin-top: 20px; padding: 0 10px;">
+            <button onclick="buyBoost()" style="flex: 1; padding: 15px; background: orange; border: none; border-radius: 10px;">🚀 বুস্ট (৫০০ গোল্ড)</button>
+            <button onclick="watchRewardAd()" style="flex: 1; padding: 15px; background: green; color: white; border: none; border-radius: 10px;">🎁 ভিডিও দেখুন</button>
+        </div>
+    </div>
+
+    <!-- রেফারেল সেকশন -->
+    <div id="refer-section" class="section">
+        <h2>রেফারেল</h2>
+        <input type="text" id="ref-link" readonly style="width: 80%; padding: 10px;">
+        <button onclick="copyRefLink()">লিংক কপি করুন</button>
+    </div>
+
+    <!-- লিডারবোর্ড সেকশন -->
+    <div id="leaderboard-section" class="section">
+        <h2>লিডারবোর্ড</h2>
+        <ul id="leaderboard-list"></ul>
+    </div>
+
+    <!-- মোবাইল অ্যাপের মতো নিচের নেভিগেশন বার -->
+    <div class="bottom-nav" style="position: fixed; bottom: 0; width: 100%; display: flex; background: #222; color: white; padding: 15px; text-align: center;">
+        <button onclick="switchTab('game')" style="flex: 1; background: none; border: none; color: white;">🎮 গেম</button>
+        <button onclick="switchTab('refer')" style="flex: 1; background: none; border: none; color: white;">👥 রেফার</button>
+        <button onclick="switchTab('leaderboard')" style="flex: 1; background: none; border: none; color: white;">🏆 লিডারবোর্ড</button>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>

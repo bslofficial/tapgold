@@ -148,3 +148,10 @@ setInterval(() => {
         if (energyEl) energyEl.innerText = energy; 
     } 
 }, 3000);
+
+// ফাংশনগুলোকে গ্লোবাল স্কোপে যুক্ত করা যাতে HTML এর onclick কাজ করে
+window.buyBoost = buyBoost;
+window.watchRewardAd = watchRewardAd;
+window.copyRefLink = copyRefLink;
+window.switchTab = switchTab;
+

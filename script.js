@@ -13,7 +13,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// টেলিগ্রাম সেফ চেক
+// টেলিগ্রাম সেফ চেক এবং ইউজার ডাটা ফেচ
 let userId = "test_user_123";
 let username = "গেস্ট ইউজার";
 
@@ -24,6 +24,14 @@ try {
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             userId = tg.initDataUnsafe.user.id.toString();
             username = tg.initDataUnsafe.user.first_name || tg.initDataUnsafe.user.username || "ইউজার";
+        } else if (tg.initData) {
+            const urlParams = new URLSearchParams(tg.initData);
+            const userString = urlParams.get('user');
+            if (userString) {
+                const userObj = JSON.parse(decodeURIComponent(userString));
+                userId = userObj.id.toString();
+                username = userObj.first_name || userObj.username || "ইউজার";
+            }
         }
     }
 } catch (e) {
@@ -47,7 +55,6 @@ async function initUser() {
         console.error("DB Error:", err);
     }
 
-    // UI আপডেট
     const nameEl = document.getElementById('username');
     const scoreEl = document.getElementById('score');
     const linkEl = document.getElementById('ref-link');
@@ -79,21 +86,21 @@ if (tapBtn) {
     });
 }
 
-window.buyBoost = async () => {
+function buyBoost() {
     if (score >= 500) {
         score -= 500; 
         power += 1;
         document.getElementById('score').innerText = score;
-        await updateDoc(userRef, { score: score, power: power });
+        updateDoc(userRef, { score: score, power: power });
         alert("বুস্ট সফল হয়েছে!");
     } else {
         alert("পর্যাপ্ত গোল্ড নেই!");
     }
-};
+}
 
-window.watchRewardAd = () => {
+function watchRewardAd() {
     if (typeof show_11274199 === 'function') {
-        show_11274199().then(() => {
+        show_11274199('pop').then(() => {
             score += 100;
             document.getElementById('score').innerText = score;
             updateDoc(userRef, { score: score });
@@ -104,23 +111,24 @@ window.watchRewardAd = () => {
     } else {
         alert('বিজ্ঞাপন লোড হয়নি, একটু পর চেষ্টা করুন।');
     }
-};
+}
 
-window.copyRefLink = () => {
+function copyRefLink() {
     const refLinkInput = document.getElementById('ref-link');
     if (refLinkInput) {
         refLinkInput.select();
+        refLinkInput.setSelectionRange(0, 99999);
         navigator.clipboard.writeText(refLinkInput.value);
         alert('রেফারেল লিংক কপি করা হয়েছে!');
     }
-};
+}
 
-window.switchTab = (tab) => {
+function switchTab(tab) {
     document.querySelectorAll('.section').forEach(e => e.classList.remove('active'));
     const targetSection = document.getElementById(`${tab}-section`);
     if (targetSection) targetSection.classList.add('active');
     if (tab === 'leaderboard') loadLeaderboard();
-};
+}
 
 async function loadLeaderboard() {
     const listEl = document.getElementById('leaderboard-list');
@@ -141,6 +149,7 @@ async function loadLeaderboard() {
 
 initUser();
 
+// এনার্জি রিফিল
 setInterval(() => { 
     if (energy < 100) {
         energy++; 
@@ -149,9 +158,8 @@ setInterval(() => {
     } 
 }, 3000);
 
-// ফাংশনগুলোকে গ্লোবাল স্কোপে যুক্ত করা যাতে HTML এর onclick কাজ করে
+// গ্লোবাল স্কোপ বাইন্ডিং
 window.buyBoost = buyBoost;
 window.watchRewardAd = watchRewardAd;
 window.copyRefLink = copyRefLink;
 window.switchTab = switchTab;
-

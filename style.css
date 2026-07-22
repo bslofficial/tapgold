@@ -6,39 +6,43 @@ body {
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* center এর বদলে flex-start দেওয়া হলো যাতে উপর থেকে নিচ পর্যন্ত সুন্দরভাবে থাকে */
+    align-items: flex-start;
     min-height: 100vh;
-}
-
-.game-container {
-    text-align: center;
-    width: 100%;
-    max-width: 400px;
-    padding: 15px;
     box-sizing: border-box;
-    padding-bottom: 80px; /* নিচের মেনুর জন্য ফাঁকা জায়গা */
 }
 
 .section {
     display: none;
-    padding: 10px 0;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+    padding-bottom: 90px;
 }
 
 .section.active {
     display: block;
 }
 
+.stats {
+    font-size: 16px;
+    margin: 10px 0 20px 0;
+    color: #ffcc00;
+}
+
 .tap-circle {
-    width: 160px;
-    height: 160px;
+    width: 180px;
+    height: 180px;
     background: gold;
     border-radius: 50%;
-    margin: 20px auto;
+    margin: 30px auto;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 60px;
+    font-size: 70px;
     cursor: pointer;
+    user-select: none;
     box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
 }
 
@@ -46,55 +50,57 @@ body {
     transform: scale(0.92);
 }
 
-/* ফুটার মেনু ফিক্সড ডিজাইন */
-.footer-menu {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+.button-container {
     display: flex;
-    justify-content: space-around;
-    background: #222;
-    padding: 10px 0;
-    border-top: 1px solid #333;
-    box-sizing: border-box;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
 }
 
-.footer-menu button, .boost-btn, .ad-btn {
-    padding: 12px;
-    background: #f39c12;
+.boost-btn, .ad-btn {
+    flex: 1;
+    padding: 15px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     color: white;
     font-weight: bold;
     cursor: pointer;
-    width: 100%;
-    margin: 8px 0;
     font-size: 14px;
 }
 
-.ad-btn {
-    background: #27ae60;
-}
+.boost-btn { background: #f39c12; }
+.ad-btn { background: #27ae60; }
 
 .ref-box {
     display: flex;
-    gap: 5px;
-    margin-top: 10px;
+    gap: 10px;
+    margin-top: 15px;
 }
 
 #ref-link {
     flex: 1;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 8px;
     border: none;
     background: #222;
     color: white;
+    font-size: 12px;
+}
+
+.ref-box button {
+    padding: 10px 15px;
+    background: #3498db;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 #leaderboard-list {
     list-style: none;
     padding: 0;
+    margin-top: 15px;
 }
 
 #leaderboard-list li {
@@ -104,4 +110,28 @@ body {
     border-radius: 8px;
     display: flex;
     justify-content: space-between;
+    font-size: 14px;
+}
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    background: #222;
+    color: white;
+    padding: 12px 0;
+    border-top: 1px solid #333;
+    box-sizing: border-box;
+}
+
+.bottom-nav button {
+    flex: 1;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
 }
